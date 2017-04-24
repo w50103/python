@@ -20,7 +20,11 @@ class pushtest():
 
         if len (os.popen('git diff').read().strip()) > 0:
             color_print('还有未提交的代码，请处理')
-
+            return False
+        else:
+            color_print('推送成功了')
+            return True
+            
         pass
 
     def process(self):
