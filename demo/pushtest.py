@@ -18,13 +18,27 @@ class pushtest():
 
     def git_pro(self):
 
+        #验证是否有未提交内容
         if len (os.popen('git diff').read().strip()) > 0:
-            color_print('还有未提交的代码，请处理')
-            return False
-        else:
-            color_print('推送成功了')
-            return True
-            
+            mes = 'Error: 还有未提交的代码，请处理'
+            return False, mes
+
+        #验证是否有冲突
+
+        if len( os.popen('git diff origin/online HEAD |egrep "\+<<<<|\+>>>>"').read().strip())  > 0:
+            mes = 'Error: 有未解决的冲突提交到了仓储'
+            return False, mes
+
+        #执行git pre-test
+
+        if os.path.exists(get_repodir() + '/deploy/pre-test'):
+            cmd = 'cd %s/deploy && ./pre-test' % get_repodir()
+           # (status, mes) = commands.get
+
+
+
+
+
         pass
 
     def process(self):
@@ -43,11 +57,14 @@ class pushtest():
         else:
             color_print("Error: 环境错误：请选择 %s" % self.dev_lists)
 
-        if self.git_pro():
-            print ('success')
+        [res, mes] = self.git_pro()
+
+        if not res:
+            color_print(mes)
 
         else:
-            print ('fail')
+            print ('success')
+
 
 
 
