@@ -2,8 +2,8 @@
 # -*- coding: utf8 -*-
 import os
 import sys
-from deploy_util import *
-
+import subprocess
+from demo.deploy_util import *
 
 class pushtest():
 
@@ -30,10 +30,51 @@ class pushtest():
             return False, mes
 
         #执行git pre-test
+        repdir = get_repodir()
+        if os.path.exists(repdir + '/deploy/pre-test') :
+            cmd = "cd %s/deploy && ./pre-test" % repdir
 
-        if os.path.exists(get_repodir() + '/deploy/pre-test'):
-            cmd = 'cd %s/deploy && ./pre-test' % get_repodir()
-           # (status, mes) = commands.get
+            (status, mes) = subprocess.getstatusoutput(cmd)
+
+            if status != 0:
+                return False, 'Error: pre-test 返回非0值异常, mes: %s' % mes
+
+        #拉去最新代码
+        subprocess.getstatusoutput('git fetch 1 >/dev/null 2>/dev/null')
+
+        if 'pre' == self.push_env:
+            self.branch_current = os.popen('git branch| grep "*"').read().strip().replace('*','')
+            if( len( os.popen('git branch| grep merge_pre').read().strip() ) < 0):
+                subprocess.getstatusoutput('git checkout -b merge_pre')
+            else:
+                subprocess.getstatusoutput('git checkout merge_pre')
+
+            if self.option.upper() == '-F':
+                subprocess.getstatusoutput('git reset --hard origin/online')
+            else:
+                subprocess.getstatusoutput('git merge origin/%' % self.origin_branch)
+
+            subprocess.getstatusoutput('git merge %s' % self.branch_current)
+            subprocess.getstatusoutput('git push origin HEAD:%s %s' % (self.origin_branch, self.option))
+            subprocess.getstatusoutput('git checkout -')
+
+
+        if '-F' != self.option.upper():
+            if(len( os.popen('git log --pretty=format:\"%%h%%x09%%an%%x09%%ad%%x09%%s\" origin/online..origin/%s' % self.origin_branch).read().strip()) > 0):
+                return False, 'Error: 环境被占用 \n '
+
+
+        pushcmd = 'git push origin HEAD:refs/heads/%s %s' %(self.origin_branch, self.option)
+
+        print(pushcmd)
+
+        [status,mes] = subprocess.getstatusoutput(pushcmd);
+
+        return status,mes
+
+
+        #force up
+
 
 
 
@@ -69,7 +110,7 @@ class pushtest():
 
 
 def main():
-    pushtest().process();
+    pushtest().process()
 
 if __name__ == '__main__':
     main()
