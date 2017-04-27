@@ -3,8 +3,8 @@
 import os
 import sys
 import subprocess
-from demo.deploy_util import *
 
+from deploy_util import *
 class pushtest():
 
 
@@ -30,6 +30,7 @@ class pushtest():
             return False, mes
 
         #执行git pre-test
+
         repdir = get_repodir()
         if os.path.exists(repdir + '/deploy/pre-test') :
             cmd = "cd %s/deploy && ./pre-test" % repdir
