@@ -7,7 +7,7 @@ import subprocess
 from datetime import date, datetime
 from deploy_util import *
 
-from demo.deploy_util import get_repodir
+from deploy_util import get_repodir
 
 
 class pushtest():
