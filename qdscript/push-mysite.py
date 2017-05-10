@@ -63,13 +63,13 @@ class pushtest():
         if '-F' != self.option.upper():
             if(len( os.popen('git log --pretty=format:\"%%h%%x09%%an%%x09%%ad%%x09%%s\" origin/online..origin/%s' % self.origin_branch).read().strip()) > 0):
                 return False, 'Error: 环境被占用 \n '
-
+        print('params %s|%s|%s|%s' % (self.origin_branch, self.option,self.branch_current,repdir))
 
         pushcmd = 'git push origin HEAD:refs/heads/%s %s' %(self.origin_branch, self.option)
 
         print(pushcmd)
 
-        [status,mes] = subprocess.getstatusoutput(pushcmd);
+        [status,mes] = subprocess.getstatusoutput(pushcmd)
 
         return status,mes
 
