@@ -59,7 +59,7 @@ class pushtest():
                 if self.option.upper() == '-F':
                     subprocess.getstatusoutput('git reset --hard origin/online')
                 else:
-                    subprocess.getstatusoutput('git merge origin/%' % self.origin_branch)
+                    subprocess.getstatusoutput('git merge origin/%s' % self.origin_branch)
 
                 subprocess.getstatusoutput('git merge %s' % self.branch_current)
                 subprocess.getstatusoutput('git push origin HEAD:%s %s' % (self.origin_branch, self.option))
