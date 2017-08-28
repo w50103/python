@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
+
+
+
+
+
+
 'template style'
 import logging
 
@@ -17,4 +23,9 @@ class Student(object):
 
 if __name__ == '__main__':
     logging.exception('abcd')
+    pass
+
+
+if __name__ == '__main__':
+    logging.exception('error')
     pass
